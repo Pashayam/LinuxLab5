@@ -5,11 +5,11 @@
 Практика c LVM
 
 ### Ход работы:
-1. Были добавлены в систему 5 виртуальных дисков по 512 Mb каждый.
+Были добавлены в систему 5 виртуальных дисков по 512 Mb каждый.
 
-1. Установлена *lvm* командой `sudo apt install lvm2 -y`
+Установлена *lvm* командой `sudo apt install lvm2 -y`
 
-1. Смотрим текущее состояние:
+Смотрим текущее состояние:
 ```
 lsblk
 sudo lvmdiskscan
@@ -19,7 +19,7 @@ sudo lvmdiskscan
 
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/2.png)
 
-1. Добавляем диск как PV:
+Добавляем диск как PV:
 
 ```
 sudo pvcreate /dev/sdb
@@ -32,7 +32,7 @@ sudo pvs
 
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/4.png)
 
-1. Создаём VG на базе PV
+Создаём VG на базе PV
 
 ```
 sudo vgcreate mai /dev/sdb
@@ -44,7 +44,7 @@ sudo vgs
 
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/6.png)
 
-1. Создаём LV на базе VG
+Создаём LV на базе VG
 
 ```
 sudo lvcreate -l+100%FREE -n first mai
@@ -55,7 +55,7 @@ sudo lvs
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/7.png)
 
 
-1. Создаём файловую систему, монтируем её и проверяем
+Создаём файловую систему, монтируем её и проверяем
 
 ```
 sudo mkfs.ext4 /dev/mai/first
@@ -69,7 +69,7 @@ sudo mount
 
 
 
-1. Создаём файл на весь размер точки монтирования
+Создаём файл на весь размер точки монтирования
 ```
 sudo dd if=/dev/zero of=/mnt/test.file bs=1M count=1500 status=progress
 sudo df -h
@@ -77,7 +77,7 @@ sudo df -h
 
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/9.png)
 
-1. Расширяем LV за счёт нового PV в VG
+Расширяем LV за счёт нового PV в VG
 ```
 sudo pvcreate /dev/sdc
 sudo vgextend mai /dev/sdc
@@ -92,7 +92,7 @@ sudo df -h
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/11.png)
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/12.png)
 
-1. Расширяем файловую систему
+Расширяем файловую систему
 ```
 sudo resize2fs /dev/mai/first
 sudo df -h
@@ -100,7 +100,7 @@ sudo df -h
 
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/13.png)
 
-1. Уменьшаем файловую систему и LV
+Уменьшаем файловую систему и LV
 ```
 sudo umount /mnt
 sudo fsck -fy /dev/mai/first
@@ -115,7 +115,7 @@ sudo df -h
 
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/16.png)
 
-1. Создаём несколько файлов и делаем снимок
+Создаём несколько файлов и делаем снимок
 ```
 sudo touch /mnt/file{1..5}
 ls /mnt
@@ -127,7 +127,7 @@ sudo lsblk
 
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/18.png)
 
-1. Удаляем несколько файлов
+Удаляем несколько файлов
 ```
 sudo rm -f /mnt/file{1..3}
 ls /mnt
@@ -136,7 +136,7 @@ ls /mnt
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/19.png)
 
 
-1. Монтируем снимок и проверяем, что файлы там есть. Отмонтируем.
+Монтируем снимок и проверяем, что файлы там есть. Отмонтируем.
 ```
 sudo mkdir /snap
 sudo mount /dev/mai/snapsh /snap
@@ -146,7 +146,7 @@ sudo umount /snap
 
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/20.png)
 
-1. Отмонтируем файловую систему и производим слияние. Проверяем, что файлы на месте.
+Отмонтируем файловую систему и производим слияние. Проверяем, что файлы на месте.
 ```
 sudo umount /mnt
 sudo lvconvert --merge /dev/mai/snapsh
@@ -156,7 +156,7 @@ ls /mnt
 
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/21.png)
 
-1. Добавляем ещё PV, VG и создаём LV-зеркало.
+Добавляем ещё PV, VG и создаём LV-зеркало.
 ```
 sudo pvcreate /dev/sd{d,e}
 sudo vgcreate vgmirror /dev/sd{d,e}
@@ -166,7 +166,7 @@ sudo lvcreate -l+80%FREE -m1 -n mirror1 vgmirror
 ![](https://github.com/Pashayam/LinuxLab5/blob/main/images/22.png)
 
 
-1. Наблюдаем синхронизацию.
+Наблюдаем синхронизацию.
 ```
 sudo lvs
 ```
